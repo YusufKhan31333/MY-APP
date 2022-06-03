@@ -6,7 +6,6 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { render } from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import { Routes ,Route } from 'react-router-dom';
-import Item from './item';
 
 function ClearDatabaseButton() {
   return (
@@ -27,7 +26,7 @@ function ClearDatabaseButton() {
 
 
  
- function AddFriendForm() {
+ function Item() {
   const [id, setId] = useState("");
 
   const [firstName, setFirstName] = useState("");
@@ -176,26 +175,7 @@ function ClearDatabaseButton() {
   </>
 }
 
-
-function App() {
-
-window.db = db;
+ export default Item;
+    
+     
   
-    return (
-        <Routes>
-        <Route path='/' element={<AddFriendForm />}/>
-      
-        <Route path='/item' element={<Item />}/>
-      </Routes>
-    );
-  
- }
- 
- 
- const rootElement = document.getElementById("root");
-render(<BrowserRouter>
-  <App />
-  </BrowserRouter>
-, rootElement);
-
-
