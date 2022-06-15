@@ -1,4 +1,3 @@
-import item from './item';
 import './index.css';
 import { db } from "./db";
 import React, {  useState } from "react";
@@ -7,21 +6,8 @@ import { render } from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import { Routes ,Route } from 'react-router-dom';
 import Item from './item';
+import Menu from './Menu';
 
-function ClearDatabaseButton() {
-  return (
-    <button
-      className="large-button"
-      onClick={() => {
-        db.transaction("rw", db.tables, async () => {
-          await Promise.all(db.tables.map((table) => table.clear()));
-        });
-      }}
-    >
-      Clear Database
-    </button>
-  );
-}
 
 
 
@@ -109,8 +95,8 @@ function ClearDatabaseButton() {
   }
 
   return <>
-
- 
+<h2>Home Page</h2>
+   
 
     <p>
       {status}
@@ -182,11 +168,15 @@ function App() {
 window.db = db;
   
     return (
+      <>
+       <Menu />
         <Routes>
-        <Route path='/' element={<AddFriendForm />}/>
+        <Route path='/' element={<AddFriendForm />} />
       
         <Route path='/item' element={<Item />}/>
       </Routes>
+
+      </>
     );
   
  }

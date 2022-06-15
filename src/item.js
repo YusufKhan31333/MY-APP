@@ -1,26 +1,10 @@
-import item from './item';
 import './index.css';
 import { db } from "./db";
 import React, {  useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { render } from "react-dom";
-import { BrowserRouter } from "react-router-dom";
-import { Routes ,Route } from 'react-router-dom';
 
-function ClearDatabaseButton() {
-  return (
-    <button
-      className="large-button"
-      onClick={() => {
-        db.transaction("rw", db.tables, async () => {
-          await Promise.all(db.tables.map((table) => table.clear()));
-        });
-      }}
-    >
-      Clear Database
-    </button>
-  );
-}
+
+
 
 
 
@@ -29,9 +13,8 @@ function ClearDatabaseButton() {
  function Item() {
   const [id, setId] = useState("");
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [descripion, setDescripion] = useState("");
   const [status, setStatus] = useState("");
   const [count, setCount] = useState("");
 
@@ -43,7 +26,7 @@ function ClearDatabaseButton() {
   
   
   const editItem =(id) => {
-    let newEditItem = record.find((friend)=>{
+    let newEditItem = item.find((friend)=>{
       return friend.id===id
     });
     
@@ -54,16 +37,15 @@ function ClearDatabaseButton() {
 
     setId(newEditItem.id);
 
-    setFirstName(newEditItem.firstName);
-    setLastName(newEditItem.lastName);
-    setEmail(newEditItem.email);
+    setName(newEditItem.name);
+    setDescripion(newEditItem.descripion);
     setStatus(newEditItem.status);
     setCount(newEditItem.count);
 
     
   }
-  async function UpdateRecord() {
-    db.record.update({id}, {firstName: firstName, lastName: lastName, email: email}).then(function (updated) {
+  async function UpdateItem() {
+    db.item.update({id}, {name: name, descripion: descripion}).then(function (updated) {
       if (updated)
       setStatus (`Record number ${id} is Updated`);
       else
@@ -72,15 +54,15 @@ function ClearDatabaseButton() {
     }
    
   
-      const record = useLiveQuery(
-        () => db.record.toArray()
+      const item = useLiveQuery(
+        () => db.item.toArray()
       );
 
-      db.record.where('firstName').startsWithIgnoreCase('y').toArray(function(record) {
-        console.log("Found: " + record.length + " friends starting with y");
+      db.item.where('name').startsWithIgnoreCase('y').toArray(function(item) {
+        console.log("Found: " + item.length + " friends starting with y");
     });
 
-    db.record.toCollection().count(function (count) {
+    db.item.toCollection().count(function (count) {
       setCount(`Total records ${count}`);
 
       console.log(count + " friends in total");
@@ -92,24 +74,23 @@ function ClearDatabaseButton() {
 
       // Add the new friend!
     
-        const id = await db.record.add({
-          firstName,
-          lastName,
-          email
+        const id = await db.item.add({
+          name,
+          descripion
         });
-        setStatus(`Friend ${firstName} successfully added. Got id ${id}`);
+        setStatus(`Friend ${name} successfully added. Got id ${id}`);
         
      
 
       
     } catch (error) {
-      setStatus(`Failed to add ${firstName}: ${error}`);
+      setStatus(`Failed to add ${name}: ${error}`);
     }
   }
 
   return <>
 
- 
+ <h2>Item Page</h2>
 
     <p>
       {status}
@@ -130,30 +111,25 @@ function ClearDatabaseButton() {
     />:null
     }
 
-    First Name:
+    Name:
     <input
       type="text"
-      value={firstName}
-      onChange={ev => setFirstName(ev.target.value)}
+      value={name}
+      onChange={ev => setName(ev.target.value)}
     />
-    Last Name:
+    Description:
     <input
       type="text"
-      value={lastName}
-      onChange={ev => setLastName(ev.target.value)}
+      value={descripion}
+      onChange={ev => setDescripion(ev.target.value)}
     />
-     Email:
-    <input
-      type="text"
-      value={email}
-      onChange={ev => setEmail(ev.target.value)}
-    />
+    
    {toggleSubmit ?
     <button onClick={addFriend}>
       Add
     </button>:
     
-    <button onClick={() => UpdateRecord()}>Update</button>
+    <button onClick={() => UpdateItem()}>Update</button>
 
     
    }
@@ -162,8 +138,8 @@ function ClearDatabaseButton() {
   
   
   
-  {record?.map(friend => <li key={friend.id}>
-    {friend.id},{friend.firstName}, {friend.lastName}, {friend.email}, <button onClick={() => db.record.delete(friend.id)} title="Delete list">
+  {item?.map(friend => <li key={friend.id}>
+    {friend.id},{friend.name}, {friend.descripion}, <button onClick={() => db.record.delete(friend.id)} title="Delete list">
      Delete </button>,
      <button onClick={() => editItem(friend.id)}>
   Edit
